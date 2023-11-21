@@ -68,6 +68,10 @@ public class Sistema
                 case 4:
                     removerProduto();
                     break;
+                // sistema em camadas
+                case 5:
+                    consultarTodosProdutos();
+                    break;
                 default:
                     System.out.println("Opção inválida, favor inserir opção válida.");
             }
@@ -86,23 +90,10 @@ public class Sistema
         // limpar buffer
         scanner.nextLine();
 
-        try
-        {
-            // make connection
-            Connection connection = SQLConnection.open();
-            Statement s = connection.createStatement();
+        Banco banco = new Banco();
 
-            // insert
-            s.executeUpdate
-                    (
-                            "insert into Produto (nome, preco) values ('" + nome + "', '" + preco + "')"
-                    );
-            connection.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        // principios solid
+        banco.inserirBanco(nome, preco);
 
         System.out.println("\nProduto adicionado com sucesso.");
     }
@@ -113,35 +104,10 @@ public class Sistema
         System.out.print("Digite o ID do produto a ser consutlado: ");
         int id = scanner.nextInt();
 
-        try
-        {
-            // make connection
-            Connection connection = SQLConnection.open();
-            Statement s = connection.createStatement();
+        Banco banco = new Banco();
 
-            // make query
-            ResultSet rs = s.executeQuery("select * from Accounts where id = '" + id + "'");
-
-            // check if the rs has a row
-            if (rs.next())
-            {
-                // show query
-                System.out.println("ID: " + rs.getInt("id") + "Name: " + rs.getString("name") + "Balance: " + rs.getFloat("balance"));
-            }
-            else
-            {
-                System.out.println("No account found with ID " + id);
-            }
-
-            // close resources
-            rs.close();
-            s.close();
-            connection.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        // principios solid
+        banco.consultarBanco(id);
     }
 
     private void alterarProduto()
@@ -198,5 +164,15 @@ public class Sistema
         }
 
         System.out.println("Produto não encontrado.");
+    }
+
+    private void consultarTodosProdutos()
+    {
+        Banco banco = new Banco();
+
+        for (int i = 0; i < produtos.size(); i++)
+        {
+            banco.consultarBanco(i);
+        }
     }
 }
